@@ -8,7 +8,7 @@ def main():
     """
     Main function to run the file renamer.
     """
-    parser = argparse.ArgumentParser(description="Rename files based on a CSV or Excel file.")
+    parser = argparse.ArgumentParser(description="Copy and rename files based on a CSV or Excel file.")
     parser.add_argument(
         "filepath", type=Path, help="Path to the CSV or Excel file containing the file renaming information."
     )

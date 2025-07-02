@@ -1,4 +1,5 @@
 import logging
+import shutil
 from pathlib import Path
 
 import pandas as pd
@@ -30,8 +31,11 @@ def rename_files(
     dry_run: bool = False,
 ):
     """
-    Renames files based on the provided DataFrame.
+    Copies files to an 'output' directory with new names based on the provided DataFrame.
     """
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
+
     required_columns = [account_col, reference_col, memo_col]
     if not all(col in data.columns for col in required_columns):
         logging.error(f"Missing one or more required columns in the input file: {required_columns}")
@@ -46,13 +50,13 @@ def rename_files(
                 continue
 
             new_filename = f"{row[account_col]}-{row[reference_col]}".upper() + current_filepath.suffix.upper()
-            new_filepath = current_filepath.with_name(new_filename)
+            new_filepath = output_dir / new_filename
 
             if dry_run:
-                logging.info(f"[DRY RUN] Would rename {current_filepath} to {new_filepath}")
+                logging.info(f"[DRY RUN] Would copy {current_filepath} to {new_filepath}")
             else:
-                current_filepath.rename(new_filepath)
-                logging.info(f"Renamed {current_filepath} to {new_filepath}")
+                shutil.copy(current_filepath, new_filepath)
+                logging.info(f"Copied {current_filepath} to {new_filepath}")
 
         except Exception as e:
             logging.error(f"An error occurred while processing {current_filepath}: {e}")
