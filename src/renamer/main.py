@@ -30,7 +30,14 @@ def main():
     args = parser.parse_args()
 
     data = read_data(str(args.filepath))
-    rename_files(data, args.account_col, args.reference_col, args.memo_col, args.dry_run)
+    rename_files(
+        data=data,
+        account_col=args.account_col,
+        reference_col=args.reference_col,
+        company_col=args.company_col,
+        memo_col=args.memo_col,
+        dry_run=args.dry_run,
+    )
 
 
 if __name__ == "__main__":

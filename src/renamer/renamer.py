@@ -37,9 +37,12 @@ def rename_files(
     output_dir = Path("output")
     output_dir.mkdir(exist_ok=True)
 
-    required_columns = [account_col, reference_col, memo_col, company_col]
-    if not all(col in data.columns for col in required_columns):
-        logging.error(f"Missing one or more required columns in the input file: {required_columns}")
+    required_columns = set([account_col, reference_col, memo_col, company_col])
+    found_columns = set(data.columns)
+    if not all(col in found_columns for col in required_columns):
+        for col in required_columns:
+            if col not in found_columns:
+                logging.error(f"Column: `{col}` is required but not found")
         return
 
     for _, row in data.iterrows():
