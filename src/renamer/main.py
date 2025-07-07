@@ -22,6 +22,9 @@ def main():
         "--memo-col", default="Memo", help="Name of the column containing the memo (current file path)."
     )
     parser.add_argument(
+        "--company-col", default="Company", help="Name of the column containing the memo (current file path)."
+    )
+    parser.add_argument(
         "--dry-run", action="store_true", help="Simulate the renaming process without actually modifying any files."
     )
     args = parser.parse_args()

@@ -16,9 +16,9 @@ def read_data(filepath: str) -> pd.DataFrame:
         raise FileNotFoundError(f"File not found: {filepath}")
 
     if path.suffix == ".csv":
-        return pd.read_csv(path)
+        return pd.read_csv(path, dtype=str)
     elif path.suffix in (".xlsx", ".xls"):
-        return pd.read_excel(path)
+        return pd.read_excel(path, dtype=str)
     else:
         raise ValueError("Unsupported file type. Please provide a CSV or Excel file.")
 
@@ -27,6 +27,7 @@ def rename_files(
     data: pd.DataFrame,
     account_col: str = "Account",
     reference_col: str = "Reference",
+    company_col: str = "Company",
     memo_col: str = "Memo",
     dry_run: bool = False,
 ):
@@ -36,7 +37,7 @@ def rename_files(
     output_dir = Path("output")
     output_dir.mkdir(exist_ok=True)
 
-    required_columns = [account_col, reference_col, memo_col]
+    required_columns = [account_col, reference_col, memo_col, company_col]
     if not all(col in data.columns for col in required_columns):
         logging.error(f"Missing one or more required columns in the input file: {required_columns}")
         return
@@ -49,7 +50,11 @@ def rename_files(
                 logging.warning(f"File not found: {current_filepath}")
                 continue
 
-            new_filename = f"{row[account_col]}-{row[reference_col]}".upper() + current_filepath.suffix.upper()
+            account = row[account_col]
+            reference = row[reference_col]
+            company = row[company_col]
+
+            new_filename = f"{account}-{company}_{reference}".upper() + current_filepath.suffix.upper()
             new_filepath = output_dir / new_filename
 
             if dry_run:
